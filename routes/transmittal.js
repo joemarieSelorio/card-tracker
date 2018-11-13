@@ -5,7 +5,6 @@ var express = require("express"),
     xlsxtojson = require("xlsx-to-json-lc");
     var nem = require("nem-sdk").default;
 
-
 //MULTER
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
@@ -25,9 +24,6 @@ var upload = multer({ //multer settings
                     callback(null, true);
             }
         }).single('file');
-
-  
-            
 /** API path that will upload the files */
     router.post('/transmittal', function(req, res) {
         var exceltojson;
@@ -59,27 +55,23 @@ var upload = multer({ //multer settings
                     if(err) {
                         return res.json({error_code:1,err_desc:err, result: null});
                     }
-                     let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
-                     let common = nem.model.objects.create('common')('1234', '8f6306b7590e3b0eee6fe7e1c829580530c48f86a5eebd3acc11f994af42e939');
-                     let transferTransaction = nem.model.objects.create('transferTransaction')('TARZJYIEPXABYOT3HXTLPTMAB2QMZOJWAOHWRPD6',1,resultString);
-                     let preparedTransaction = nem.model.transactions.prepare('transferTransaction')(common, transferTransaction, nem.model.network.data.testnet.id);
-                     nem.model.transactions.send(common, preparedTransaction, endpoint).then(function(res){
-                          console.log(res);
-                      }, function(err){
-                          console.log(err);
-                      });
-                    var rBytes = nem.crypto.nacl.randomBytes(32);
-                    var privateKey = nem.utils.convert.ua2hex(rBytes);
-                    var keyPair = nem.crypto.keyPair.create(privateKey);
-                    var address = nem.model.address.toAddress(keyPair.publicKey, nem.model.network.data.testnet.id);
-                    console.log(address);
+                    let Nemaddress = 'asdasd';
 
-                     res.render('data.ejs', {results: result});
+                    for (let i = 0; i < result.length; i++) {
+                        let rb32 = nem.crypto.nacl.randomBytes(32);
+                        let pkey = nem.utils.convert.ua2hex(rb32);
+                        let keyPair = nem.crypto.keyPair.create(pkey);
+                        var publicKey = keyPair.publicKey.toString();
+                        var address = nem.model.address.toAddress(publicKey, nem.model.network.data.testnet.id)
+                      }
+                      
+
+                    res.render('data.ejs', {results: result});
                 });
             } catch (e){
                 res.json({error_code:1,err_desc:"Corupted excel file"});
             }
         })
     });
-    
+
 module.exports = router;

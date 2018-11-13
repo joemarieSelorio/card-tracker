@@ -25,6 +25,7 @@ router.post("/register", function(req, res){
             if(err){
                 console.log(err);
                 return res.render("register");
+                
             }
             passport.authenticate("local")(req, res, function(){
                 res.redirect("/transmittal");
@@ -42,8 +43,7 @@ router.get("/login", function(req, res){
 router.post("/login", passport.authenticate
     ("local", {successRedirect: "/transmittal",failureRedirect: "/login"}), 
                     function(req, res){
-                
-                    });
+    });
 
 module.exports = router;
 
