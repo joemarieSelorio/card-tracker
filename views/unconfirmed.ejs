@@ -1,0 +1,35 @@
+<html>
+
+<head>
+    <title>Transmittal</title>
+	<link rel="stylesheet" href = "/stylesheets/reg.css" >
+</head>
+<body>
+    <div class=header></div>
+    <div class="container" >
+        <div class="frmReg">
+            <h1> <%= data.batchName%> </h1>
+        </div>
+        <div id=tblData>
+            <table id="tbl">
+					<tr>
+						<th>Nem Address</th>
+						<th>Tracking</th>
+						<th>Client Name</th>
+						<th>Client Addres</th>
+						<th>Status<th>
+                    </tr>
+					 <% data.forEach((data)=>{ %>
+					<tr>
+						<td><%= data.nemaddress %></td>
+						<td><%= data.tracking %></td>
+						<td><%= data.name %></td>
+						<td><%= data.address %></td>
+						<td><%= data.status %></td>
+					</tr>
+					 <% }) %>       
+        </div>
+    </div>
+    <div class=footer></div>
+</body>
+</html>

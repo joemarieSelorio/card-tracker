@@ -22,17 +22,14 @@ router.get('/courier/transactions/:id', (req, res) =>{
                                 data.transaction.message.payload
                             );
                             if(message.length > 100){
-                                //need to parse message into JSON
-                             req.body.id = message.id;
-                             req.body.name = message.name;
-                             req.body.address = message.address;
+                                let messageData = JSON.parse(message);
+                                console.log(messageData);
                             }
                         }
                     });
         }, function(err) {
                 console.error(err);
         });
-    
         res.render("courier/transaction");
         }
     });

@@ -5,7 +5,15 @@ var UserSchema = new mongoose.Schema({
     password: String,
     address: String,
     publicKey: String,
-})
+    privateKey: String,
+    isAdmin: {type: Boolean, default: false},
+    transaction: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Transaction"
+        }       
+    ],
+});
 
 UserSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model("user", UserSchema);
