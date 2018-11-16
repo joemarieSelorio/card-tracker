@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>Transmittal</title>
+	<link rel="stylesheet" href = "/stylesheets/reg.css" >
+</head>
+<body>
+    <div class=header>
+	</div>
+    <div class="container" >
+        <div class="frmReg">
+			<h1 class = 'batch' name ="batchName" value ='<%= data.batchName%>'><%= transmittal.batchName%></h1>
+        </div>
+        <div id=tblData>
+	<form action="/transmittal/send" method="post">
+            <table id="mytable">
+					<tr>
+						<th>Nem Address</th>
+						<th>Tracking</th>
+						<th>Client Name</th>
+						<th>Client Addres</th>
+						<th>Status<th>
+						</tr>
+					 <% transmittal.forEach((data)=>{ %>
+					<tr>
+						<td><%= transmittal.nemaddress %></td>
+						<td><%= transmittal.tracking %></td>
+						<td><%= transmittal.name %></td>
+						<td><%= transmittal.address %></td>
+						<td><%= transmittal.status %></td>
+					</tr>
+					 <% }) %>
+						<div class="form-group">
+							<button class="btn btn-lg btn-primary btn-block">Save</button>
+						</div>
+			</form>
+			<form action="/transmittal/send" method="post">
+				<div class="form-group">
+					<button id = 'sendBtn' class="btn btn-lg btn-primary btn-block">Send</button>
+				</div>
+			</form>
+					<a href="/">Cancel</a>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/getData.js"></script>
+</body>
+</html>

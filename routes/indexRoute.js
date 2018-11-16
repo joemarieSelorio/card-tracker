@@ -40,6 +40,7 @@ router.get("/login", function(req, res){
 //HANDLES LOGIN IN LOGIC
 //router.post("/login", middleware, callback func)
 router.post("/login", passport.authenticate
+
     ("local", {successRedirect: "/transmittal",failureRedirect: "/login"}), 
                     function(req, res){
                         console.log(req.user)

@@ -6,7 +6,6 @@ var express = require("express"),
     var nem = require("nem-sdk").default;
     var middleware = require("../middleware");
     Transaction = require("../model/transaction");
-var file = {};
 
 //MULTER
 var storage = multer.diskStorage({ //multers disk storage settings
@@ -18,6 +17,7 @@ var storage = multer.diskStorage({ //multers disk storage settings
         cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1])
     }
 });
+
 var upload = multer({ //multer settings
         storage: storage,
             fileFilter : function(req, file, callback) { //file filter
@@ -66,48 +66,38 @@ var upload = multer({ //multer settings
                         var publicKey = keyPair.publicKey.toString();
                         var address = nem.model.address.toAddress(publicKey, nem.model.network.data.testnet.id);
                         data[i].nemaddress = address;
+                        var status = data[i].status = 'To be verified';
 
                     var user = {
                         id: req.user._id,
                         username: req.user.username
                     }
-
                     data.batchName = 'batch 1'
+                }
 
-                    
                 router.post('/transmittal/send',function(req, res){
-
                     for(let i = 0; i < data.length; i++){
-
-                        var transactions = {
-                            address: data[i].address,
-                            tracking: data[i].tracking,
-                            name: data[i].name,
-                            nemaddress: data[i].nemaddress,
-                            status: 'To be verified',
-                            batchName: data.batchName,
-                            user: user      
-                        };
-                        Transaction.update(
-                            {tracking: data[i].tracking}, 
-                            {$setOnInsert: transactions}, 
-                            {upsert: true}, 
-                            function(err, a) {
-                                console.log(a);
-                             }
-                        );
-                            console.log(transactions.batchName);
-                        }
-                        Transaction.find({batchName: data.batchName}, function(err, transactions){
-                            var transactionMap ={};
-                            transactions.forEach(function(transaction){
-                                 transactionMap[transaction._id]    = transaction;
-                            });
-                            console.log(transactionMap);
-                        });
+                        var transmittal = [
+                            data[i].batchName,
+                            data[i].nemaddress,
+                            data[i].name,
+                            data[i].address,
+                            data[i].status
+                        ]
+                        var transmittalString = transmittal.toString();
+                        console.log(transmittalString)
+                        var array = transmittalString.split(',');
+                        console.log(array);
+                    }
+                    // middleware.send('93717a4a04d48af658de7e96e31fdc48ba46d4888b6bd1d2f140d59e0479ba02',
+                    //     '12345',
+                    //     'TAVLKRJNGA43QPF7TATJNYR3KC7KNPUPUA72IQ3R',
+                    //     transmittalString
+                    //     );
                     });
-            }
+
         res.render('send', {data: data});
+
         });
             } catch (e){
                 res.json({error_code:1,err_desc:"Corupted excel file"});

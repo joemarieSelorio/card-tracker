@@ -6,6 +6,7 @@ var passport = require('passport');
 var localStrategy = require('passport-local');
 var transmittalRoute = require("./routes/transmittal");
 var indexRoutes = require("./routes/indexRoute");
+var received = require("./routes/received");
 var User = require("./model/user");
 var methodOverride = require("method-override");
 var port = 3300;
@@ -43,6 +44,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(indexRoutes);
 app.use(transmittalRoute);
+app.use(received);
 
 
 

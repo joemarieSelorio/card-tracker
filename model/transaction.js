@@ -1,5 +1,4 @@
 var mongoose = require("mongoose");
-
 var transactionSchema = mongoose.Schema({
     address: String,
     tracking: String,
