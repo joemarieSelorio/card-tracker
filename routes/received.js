@@ -8,39 +8,22 @@ function notEmpty(obj) {
     for (var x in obj) { return true; }
     return false;
  }
-
-router.get('/received', function(res, req){
+ 
+router.get('/received', function(req, res) {
     let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
-    nem.com.requests.account.transactions.incoming(endpoint, "TCDOSPLL5GIGTZZXEE6UDZR4NF5NNNW6WQGFDC4M").then(function(res) {
-            res.data.forEach((data) =>{
-               if(notEmpty(data.transaction.message)){
-                  var message = nem.utils.convert.hex2a(
-                    data.transaction.message.payload
-                );
-                     if(message.length > 100){
-                        console.log(message);
-                        var data = message.split(",");
-                        console.log("=====================");
-                        console.log(data);
-
-                        var transmittal = {
-                            nemaddress : data[1],
-                            name: data[2] ,
-                            address: data[3],
-                            status: data[4]
-                        }
-
-                       return transmittal;
-                       
-                     }
+    nem.com.requests.account.transactions.incoming(endpoint, "TAVLKRJNGA43QPF7TATJNYR3KC7KNPUPUA72IQ3R").then(function(trans){
+        var message = nem.utils.convert.hex2a(
+            trans.data[0].transaction.message.payload
+        );
+            var transObj = JSON.parse(message);
+            for(let i = 0; i < transObj.length; i++){
+                if(i === transObj.length -1){
+                    console.log(transObj);
+                    res.render('incoming', {transmittal: transObj});
                 }
-                
-            });
-    }, function(err) {
-        console.error(err);
-        
-        });
-        console.log(transmittal);
-        res.render('incoming', {transmittal: transmittal});
+            }
+        }, function(err) {
+    });
 });
+
 module.exports = router;

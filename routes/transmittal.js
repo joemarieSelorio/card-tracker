@@ -5,7 +5,16 @@ var express = require("express"),
     xlsxtojson = require("xlsx-to-json-lc");
     var nem = require("nem-sdk").default;
     var middleware = require("../middleware");
-    Transaction = require("../model/transaction");
+    Transaction = require("../model/transaction")
+
+function IsJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
 
 //MULTER
 var storage = multer.diskStorage({ //multers disk storage settings
@@ -65,44 +74,76 @@ var upload = multer({ //multer settings
                         let keyPair = nem.crypto.keyPair.create(pkey);
                         var publicKey = keyPair.publicKey.toString();
                         var address = nem.model.address.toAddress(publicKey, nem.model.network.data.testnet.id);
-                        data[i].nemaddress = address;
+                        data[i].nemaddress = address; 
+                        data[i].batchName = 'batch 1'
                         var status = data[i].status = 'To be verified';
 
                     var user = {
                         id: req.user._id,
                         username: req.user.username
                     }
-                    data.batchName = 'batch 1'
                 }
-
                 router.post('/transmittal/send',function(req, res){
+                    var array = [];
                     for(let i = 0; i < data.length; i++){
-                        var transmittal = [
-                            data[i].batchName,
-                            data[i].nemaddress,
-                            data[i].name,
-                            data[i].address,
-                            data[i].status
-                        ]
-                        var transmittalString = transmittal.toString();
-                        console.log(transmittalString)
-                        var array = transmittalString.split(',');
-                        console.log(array);
+                         var transmittal = {
+                            batchName: data[i].batchName,
+                            nemaddress: data[i].nemaddress,
+                            name: data[i].name,
+                            address: data[i].address,
+                            status: data[i].status
+                         }
+                        array.push(transmittal);
+                        if(i === data.length-1){
+                            var sendFile = JSON.stringify(array);
+                           middleware.send('93717a4a04d48af658de7e96e31fdc48ba46d4888b6bd1d2f140d59e0479ba02',
+                           '12345',
+                           'TAVLKRJNGA43QPF7TATJNYR3KC7KNPUPUA72IQ3R',
+                           sendFile
+                           );
+                        }
                     }
-                    // middleware.send('93717a4a04d48af658de7e96e31fdc48ba46d4888b6bd1d2f140d59e0479ba02',
-                    //     '12345',
-                    //     'TAVLKRJNGA43QPF7TATJNYR3KC7KNPUPUA72IQ3R',
-                    //     transmittalString
-                    //     );
-                    });
+                 });
 
-        res.render('send', {data: data});
+        res.render('monitor', {data: data});
 
         });
+
+    
             } catch (e){
                 res.json({error_code:1,err_desc:"Corupted excel file"});
             }
         })
     });
+
+router.get('/transmittal/monitor', function(req, res){
+        let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+        nem.com.requests.account.transactions.all(endpoint, "TARZJYIEPXABYOT3HXTLPTMAB2QMZOJWAOHWRPD6").then(function(trans){
+            for(let i = 0; i < trans.data.length; i++){
+                var  message = nem.utils.convert.hex2a(
+                    trans.data[i].transaction.message.payload
+                );
+                if(message.length > 100) {
+                    if(IsJsonString(message)){
+                        var msg = JSON.parse(message);
+                        if(msg[i].status === 'To be verified'){
+                            var d = Date(Date.now()); 
+                            var dateNow = d.toString();
+                            var transactionObj = {
+                                batchName: msg[i].batchName,
+                                sent: dateNow
+                            }
+                            var transactions = [];
+                            transactions.push(transactionObj);
+                            if(i === transactions.length -1){
+                                res.render('monitor', {transactions: transactions});
+                            }
+                        }
+                    }
+                }
+            }
+        }, function(err) {
+    });
+});
 
 module.exports = router;

@@ -11,6 +11,7 @@ middlewareObj.isLoggedIn = function(req, res, next){
     res.redirect("/login");
 }
 
+
 middlewareObj.send = function (privateKey, password, receiverAdd, message) {
     var nem = require('nem-sdk').default;
     let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);

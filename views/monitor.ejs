@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>Transmittal</title>
+	<link rel="stylesheet" href = "/stylesheets/reg.css" >
+</head>
+<body>
+    <div class=header></div>
+    <div class="container" >
+        <div class="frmReg">
+            
+        </div>
+        <div id=tblData>
+            <table id="tbl">
+					<tr>
+						<th>Batch</th>
+						<th>Date Sent</th>
+                    </tr>
+					 <% for(let i = 0; i < transactions.length; i++){ %>
+					<tr>
+						<td><%= transactions[i].batchName %></td>
+						<td><%= transactions[i].sent %></td>
+					</tr>
+					 <% } %>       
+        </div>
+    </div>
+    <div class=footer></div>
+</body>
+</html>
