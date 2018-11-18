@@ -16,6 +16,74 @@ function notEmpty(obj) {
     return true;
 }
 
+
+let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+nem.com.requests.transaction.byHash(endpoint, '801574b09a122f540d72e0adbcbb24895ee6876d58c2a14f3cb43ee6677744a1').then(function(trans){
+            console.log(trans);
+            //  var  message = nem.utils.convert.hex2a(
+                
+            // );
+            // console.log(message)
+}, function(err){
+
+});
+
+//console.log(trans.data[0].meta.hash.data);
+// let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+// nem.com.requests.account.transactions.all(endpoint, "TARZJYIEPXABYOT3HXTLPTMAB2QMZOJWAOHWRPD6").then(function(trans){
+//     var transactions = [];
+//     for(let i = 0; i < trans.data.length; i++){
+//         var  message = nem.utils.convert.hex2a(
+//             trans.data[i].transaction.message.payload
+//         );
+//         if(message.length > 100) {
+//             if(IsJsonString(message)){
+//                 var d = Date(); 
+//                  a = d.toString() 
+//                 var msg = JSON.parse(message);
+//                 transaction = {
+//                     batch:msg[i].batchName,
+//                     sentDate:a,
+//                     hash: trans.data[i].meta.hash.data
+//                 }
+//                 console.log(transaction)
+//                 transactions.push(transaction);
+//             }
+//         }
+//     }
+//     // res.render('monitor', {transactions: transactions});      
+//         }, function(err) {
+//     });
+
+
+// let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+// nem.com.requests.account.transactions.all(endpoint, "TARZJYIEPXABYOT3HXTLPTMAB2QMZOJWAOHWRPD6").then(function(trans){
+//     var transactions = [];
+
+//     console.log(trans.data[0].meta.hash.data);
+
+//     for(let i = 0; i < trans.data.length; i++){
+//         var  message = nem.utils.convert.hex2a(
+//             trans.data[i].transaction.message.payload
+//     );
+        
+//         if(message.length > 100) {
+//             if(IsJsonString(message)){
+//                 var d = Date(); 
+//                 a = d.toString();
+
+//                 transaction = {
+//                     batch:msg[i].batchName,
+//                     sentDate:a
+//                 }
+//                 transactions.push(transaction);
+//             }
+//         }
+//     }
+
+// }, function(err) {
+// });
+
 // let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
 //     nem.com.requests.account.transactions.incoming(endpoint, "TAVLKRJNGA43QPF7TATJNYR3KC7KNPUPUA72IQ3R").then(function(trans) {
 //         var message = nem.utils.convert.hex2a(

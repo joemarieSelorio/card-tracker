@@ -14,8 +14,7 @@ function IsJsonString(str) {
             return false;
         }
         return true;
-    }
-
+}
 //MULTER
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
@@ -26,6 +25,7 @@ var storage = multer.diskStorage({ //multers disk storage settings
         cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1])
     }
 });
+
 
 var upload = multer({ //multer settings
         storage: storage,
@@ -39,6 +39,7 @@ var upload = multer({ //multer settings
 
 /** API path that will upload the files */
     router.post('/transmittal/upload', middleware.isLoggedIn, function(req, res) {
+        console.log(req.body.batch);
         var exceltojson;
         upload(req,res,function(err){
             if(err){
@@ -75,8 +76,8 @@ var upload = multer({ //multer settings
                         var publicKey = keyPair.publicKey.toString();
                         var address = nem.model.address.toAddress(publicKey, nem.model.network.data.testnet.id);
                         data[i].nemaddress = address; 
-                        data[i].batchName = 'batch 1'
-                        var status = data[i].status = 'To be verified';
+                        data[i].batchName = req.body.batch;
+                        data[i].status = 'To be verified';
 
                     var user = {
                         id: req.user._id,
@@ -88,62 +89,124 @@ var upload = multer({ //multer settings
                     for(let i = 0; i < data.length; i++){
                          var transmittal = {
                             batchName: data[i].batchName,
-                            nemaddress: data[i].nemaddress,
+                            tracking: data[i].tracking,
                             name: data[i].name,
                             address: data[i].address,
                             status: data[i].status
                          }
+                         var transmittalData = {
+                            tracking: data[i].tracking,
+                            nemaddress: data[i].nemaddress,
+                            status: data[i].status 
+                         }
+
+                         Transaction.update(
+                            {tracking: transmittal.tracking}, 
+                            {$setOnInsert: transmittalData}, 
+                            {upsert: true}, 
+                            function(err, numAffected) {
+                                console.log(numAffected);
+                             }
+                        );
+
                         array.push(transmittal);
+                        var sendFile = JSON.stringify(array);
                         if(i === data.length-1){
-                            var sendFile = JSON.stringify(array);
-                           middleware.send('93717a4a04d48af658de7e96e31fdc48ba46d4888b6bd1d2f140d59e0479ba02',
+                           middleware.send('55105eeff245f5f2fde0946fcd84d345690fca230c44bba5d6303f40a78c9ad1',
                            '12345',
-                           'TAVLKRJNGA43QPF7TATJNYR3KC7KNPUPUA72IQ3R',
+                           'TD5XSW4MS2PW2ZCBHAMAEPRL5OSA4OUSCIBY2EPP',
                            sendFile
                            );
                         }
                     }
+                    res.redirect('/main');
                  });
-
-        res.render('monitor', {data: data});
-
+      
+                 res.render('send', {data: data});
         });
-
-    
             } catch (e){
                 res.json({error_code:1,err_desc:"Corupted excel file"});
             }
         })
     });
 
-router.get('/transmittal/monitor', function(req, res){
-        let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
-        nem.com.requests.account.transactions.all(endpoint, "TARZJYIEPXABYOT3HXTLPTMAB2QMZOJWAOHWRPD6").then(function(trans){
-            for(let i = 0; i < trans.data.length; i++){
-                var  message = nem.utils.convert.hex2a(
-                    trans.data[i].transaction.message.payload
-                );
-                if(message.length > 100) {
-                    if(IsJsonString(message)){
-                        var msg = JSON.parse(message);
-                        if(msg[i].status === 'To be verified'){
-                            var d = Date(Date.now()); 
-                            var dateNow = d.toString();
-                            var transactionObj = {
-                                batchName: msg[i].batchName,
-                                sent: dateNow
-                            }
-                            var transactions = [];
-                            transactions.push(transactionObj);
-                            if(i === transactions.length -1){
-                                res.render('monitor', {transactions: transactions});
-                            }
-                        }
+router.get('/monitor', function(req, res){
+    var user = req.user;
+    let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+    nem.com.requests.account.transactions.all(endpoint, user.address).then(function(trans){
+        var transactions = [];
+        for(let i = 0; i < trans.data.length; i++){
+            if(trans.data[i].transaction.message){
+            var  message = nem.utils.convert.hex2a(
+                trans.data[i].transaction.message.payload
+            );
+            if(message.length > 100) {
+                if(IsJsonString(message)){
+                    var d = Date(); 
+                    a = d.toString() ;
+                    var msg = JSON.parse(message);
+                    transaction = {
+                        batch:msg[0].batchName,
+                        sentDate:a,
+                        hash: trans.data[i].meta.hash.data
                     }
+                    transactions.push(transaction);
                 }
             }
-        }, function(err) {
-    });
+        }
+    }
+        res.render('monitor', {transactions: transactions, user: user});      
+            }, function(err) {
+        });
 });
+
+router.get('/unverified', function(req, res){
+    var user = req.user;
+    let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+    nem.com.requests.account.transactions.all(endpoint, user.address).then(function(trans){
+        var transactions = [];
+
+        for(let i = 0; i < trans.data.length; i++){
+        if(trans.data[i].transaction.message){
+            var  message = nem.utils.convert.hex2a(
+                trans.data[i].transaction.message.payload
+            );
+            if(message.length > 100) {
+                if(IsJsonString(message)){
+                if(trans.data[i]){
+                    var d = Date(); 
+                    a = d.toString() ;
+                    var msg = JSON.parse(message);
+                    transaction = {
+                        batch:msg[0].batchName,
+                        sentDate:a,
+                        hash: trans.data[i].meta.hash.data
+                    }
+                    transactions.push(transaction);
+                }
+            }
+            }
+        }
+    }
+        res.render('monitor', {transactions: transactions, user: user});      
+            }, function(err) {
+        });
+});
+
+router.post('/transmittal/monitor', function(req, res){
+   var hash = req.body.hash;
+   let endpoint = nem.model.objects.create("endpoint")("http://23.228.67.85", 7890);
+   nem.com.requests.transaction.byHash(endpoint, hash).then(function(trans){
+    if(trans.data[i].transaction.message){
+               var  message = nem.utils.convert.hex2a(
+                   trans.transaction.message.payload
+               );
+            var transactions = JSON.parse(message);
+            res.render('view', {transactions: transactions});
+               }
+            });
+            
+        }, function(err){
+   });
 
 module.exports = router;

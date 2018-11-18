@@ -3,7 +3,6 @@
 <link rel="stylesheet" href="/stylesheets/transmittal.css">
 </head>
 <body>
-
 <header id="header">
   <div class="container">
     <div class="row">
@@ -25,8 +24,6 @@
     </ol>
   </div>
 </section>
-
-
 <section id="main">
   <div class="container">
     <div class="row">
@@ -34,35 +31,37 @@
         <!-- Website Overview -->
         <div class="panel panel-default">
           <div class="panel-heading main-color-bg">
-            <h3 class="panel-title">Batch List</h3>
+            <h3 class="panel-title">RECEIVED DELIVERY</h3>
           </div>
           <div class="panel-body">
               <input class="form-control" type="text" placeholder="Search by batch...">
               <div class="scrollable">
                   <table class="responsive-table table">
                     <thead>
-                      <tr>
-                          <th>Batch</th>
-                          <th>Date Sent</th>
-                          <th>View<th>
-                      </tr>
+                        <tr>
+                            <th>Batch</th>
+                            <th>Date Received</th>
+                            <th>View<th>
+                        </tr>
                     </thead>
                     <tbody>
-                      <% transactions.forEach(function(trans){%>
-                          <form action="/main/view" method="post">
-                         <tr>
-                             <td>
-                                <%= trans.batch%>
-                             <input type="hidden" type = 'text' name = "hash" value ="<%= trans.hash %>">
-                             </td>
-                             <td><%= trans.sentDate %></td>
-                             <td><input class="btn btn-warning" type="submit" value = "View"><td>
-                         </tr>
-                     </form>
-                <% })%>   
+                        <% transactions.forEach(function(trans){%>
+                            <form action="/verify" method="post">
+                                <tr> 
+                                    <td>
+                                        <%= trans.batch%>
+                                        <input type="hidden" type = 'text' name = "hash" value ="<%= trans.hash %>">
+                                    </td>
+                                    <td><%= trans.sentDate %></td>
+                                    <td><input class = "btn btn-warning"  type="submit" value = "View"><td>
+                                </tr>
+                            </form>
+                        <% })%>   
+                    </form>    
                     </tbody>
                   </table>
                </div> 
+              
              <div class="container btn-container">
                <div class="row">
                  <div class="col-xs-6">   
@@ -81,9 +80,6 @@
   <p>Copyright Momoboys , &copy; 2018</p>
 </footer>
 
-<!-- Modals -->
-
-<!-- Add Page -->
 <div class="modal fade" id="addPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 <div class="modal-dialog" role="document">
 <div class="modal-content">

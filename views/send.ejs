@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Transmittal</title>
+    <title>Send Transmittal</title>
 	<link rel="stylesheet" href = "/stylesheets/reg.css" >
 </head>
 <body>
@@ -15,6 +15,7 @@
             <table id="mytable">
 					<tr>
 						<th>Nem Address</th>
+						<th>Batch</th>
 						<th>Tracking</th>
 						<th>Client Name</th>
 						<th>Client Addres</th>
@@ -23,6 +24,7 @@
 					 <% data.forEach((data)=>{ %>
 					<tr>
 						<td name = 'nemaddress' value = <%= data.nemaddress %>><%= data.nemaddress %></td>
+						<td><%= data.batchName %></td>
 						<td><%= data.tracking %></td>
 						<td><%= data.name %></td>
 						<td><%= data.address %></td>
@@ -38,10 +40,9 @@
 					<button id = 'sendBtn' class="btn btn-lg btn-primary btn-block">Send</button>
 				</div>
 			</form>
-					<a href="/">Cancel</a>
+				<a href="/">Cancel</a>
 		</div>
 	</div>
-
 	<script type="text/javascript" src="/getData.js"></script>
 </body>
 </html>

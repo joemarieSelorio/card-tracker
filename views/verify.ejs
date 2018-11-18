@@ -1,9 +1,7 @@
 <% include ./partials/header %>
-
 <link rel="stylesheet" href="/stylesheets/transmittal.css">
 </head>
 <body>
-
 <header id="header">
   <div class="container">
     <div class="row">
@@ -26,7 +24,6 @@
   </div>
 </section>
 
-
 <section id="main">
   <div class="container">
     <div class="row">
@@ -34,35 +31,39 @@
         <!-- Website Overview -->
         <div class="panel panel-default">
           <div class="panel-heading main-color-bg">
-            <h3 class="panel-title">Batch List</h3>
+            <h3 class="panel-title">RECEIVED TRANSMITTALS</h3>
           </div>
           <div class="panel-body">
-              <input class="form-control" type="text" placeholder="Search by batch...">
               <div class="scrollable">
                   <table class="responsive-table table">
                     <thead>
-                      <tr>
-                          <th>Batch</th>
-                          <th>Date Sent</th>
-                          <th>View<th>
-                      </tr>
+                            <tr>
+                                    <th>Batch</th>
+                                    <th>Tracking</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Status</th>            
+                                </tr>
                     </thead>
                     <tbody>
-                      <% transactions.forEach(function(trans){%>
-                          <form action="/main/view" method="post">
-                         <tr>
-                             <td>
-                                <%= trans.batch%>
-                             <input type="hidden" type = 'text' name = "hash" value ="<%= trans.hash %>">
-                             </td>
-                             <td><%= trans.sentDate %></td>
-                             <td><input class="btn btn-warning" type="submit" value = "View"><td>
-                         </tr>
-                     </form>
-                <% })%>   
+                    <% for(let i = 0; i < transactions.length; i++ ){ %>
+                        <form action="/verify/send" method="post">
+                            <tr>
+                                <td>
+                                <input type="hidden" type = 'text' name = "hash" value ="<%= transactions[i].nemAddress%>">
+                                <%= transactions[i].batchName %>
+                                </td>
+                                <td><%= transactions[i].tracking %></td>
+                                <td><%= transactions[i].name %></td>
+                                <td><%= transactions[i].address %></td>
+                                <td><%= transactions[i].status %></td>
+                            </tr>
+                        <% } %>  
+                        </form>    
                     </tbody>
                   </table>
                </div> 
+              
              <div class="container btn-container">
                <div class="row">
                  <div class="col-xs-6">   
@@ -70,6 +71,7 @@
                  </div>
                </div>
              </div>
+             <input class = "btn btn-warning" type="submit" type="submit" value = "For Delivery"> 
           </div>
           </div>
           <!-- Latest Users -->
@@ -102,7 +104,7 @@
     </p>
   <div class="modal-footer">
 
-</div>
+  </div>
 </form>
 </div>
 </div>

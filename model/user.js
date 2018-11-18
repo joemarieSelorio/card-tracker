@@ -6,7 +6,7 @@ var UserSchema = new mongoose.Schema({
     address: String,
     publicKey: String,
     privateKey: String,
-    isAdmin: {type: Boolean, default: false},
+    isCourier: {type: Boolean, default: false},
     transaction: [
         {
             type: mongoose.Schema.Types.ObjectId,

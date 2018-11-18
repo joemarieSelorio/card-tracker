@@ -1,0 +1,135 @@
+<% include ./partials/header %>
+
+<link rel="stylesheet" href="/stylesheets/transmittal.css">
+</head>
+<body>
+  
+<header id="header">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10">
+        <h1><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <small>View</small></h1>
+      </div>
+      <div class="col-md-2">
+        <div class="dropdown create">
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="breadcrumb">
+  <div class="container">
+    <ol class="breadcrumb">
+      <li class="active"></li>
+    </ol>
+  </div>
+</section>
+
+<section id="main">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Website Overview -->
+        <div class="panel panel-default">
+          <div class="panel-heading main-color-bg">
+            <h3 class="panel-title">Delivery list</h3>
+          </div>
+          <div class="panel-body">
+              <input class="form-control" type="text" placeholder="Search...">
+              <div class="scrollable">
+                  <table class="responsive-table table">
+                    <thead>          
+                        <tr>
+                            <th>Batch</th>
+                            <th>Tracking</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Status</th>
+                            <th>View<th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% transactions.forEach(function(transaction){ %>
+                            <form action="/transmittal/monitor" method="post">
+                                <tr>
+                                    <td>
+                                    <input type="hidden" type = 'text' name = "hash" value ="<%= transaction.nemAddress%>">
+                                    <%= transaction.batchName %>
+                                    </td>
+                                    <td><%= transaction.tracking %></td>
+                                    <td><%= transaction.name %></td>
+                                    <td><%= transaction.address %></td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                              Status
+                                              <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                              <li><a href="#">Delivered</a></li>
+                                              <li><a href="#">No available receiver</a></li>
+                                              <li><a href="#">Address not found</a></li>
+                                              <li><a href="#">Refused to accept</a></li>
+                                            </ul>
+                                          </div>
+                                    </td>
+                                    <td><input class="btn btn-warning" type="submit" value = "Send"><td>
+                                </tr>
+                            </form>
+                        <% }) %>   
+                    </tbody>
+                  </table>
+               </div> 
+              
+             <div class="container btn-container">
+               <div class="row">
+                 <div class="col-xs-6">   
+
+                 </div>
+               </div>
+             </div>
+          </div>
+          </div>
+          <!-- Latest Users -->
+      </div>
+  </div>
+</section>
+
+<footer id="footer">
+  <p>Copyright Momoboys , &copy; 2018</p>
+</footer>
+
+<!-- Modals -->
+
+<!-- Add Page -->
+<div class="modal fade" id="addPage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+  <form>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title" id="myModalLabel">Upload File</h4>
+  </div>
+  <div class="modal-body">
+    <p>
+      <h1>Please upload your excel file.</h1>
+    </p>
+    <p>
+        <button type="submit" class="btn btn-primary">Select File</button>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </p>
+  <div class="modal-footer">
+
+  </div>
+</form>
+</div>
+</div>
+</div>
+
+<script>
+ CKEDITOR.replace( 'editor1' );
+</script>
+
+
+<% include ./partials/footer %>

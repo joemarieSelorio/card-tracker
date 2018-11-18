@@ -1,10 +1,8 @@
 var mongoose = require("mongoose");
 var transactionSchema = mongoose.Schema({
-    address: String,
     tracking: String,
-    name: String,
     nemaddress: String,
-    batchName: String,
+    status: String,
     user: {
         id: {
             type :mongoose.Schema.Types.ObjectId,
